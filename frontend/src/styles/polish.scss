@@ -1,0 +1,133 @@
+// Finishing touches: gradients, motion, mega-menu. Loaded after pages.scss, so it can refine earlier rules.
+// Motion rules only use opacity / translate / transform (no layout shift). Reduced motion is honoured at the bottom.
+
+// ---------- Gradients and colour life ----------
+.hs-hero {
+  position: relative;
+  background:
+    radial-gradient(520px 320px at 8% 10%, rgba(37, 99, 235, 0.14), transparent 70%),
+    radial-gradient(440px 300px at 92% 85%, rgba(249, 115, 22, 0.12), transparent 70%),
+    linear-gradient(100deg, #e4eeff 0%, #f1f6ff 48%, #f8fafc 100%);
+}
+.hs-pill { background: linear-gradient(135deg, #dbe8ff, #e9f0ff); border: 1px solid rgba(37, 99, 235, 0.18); }
+.hs-section--soft { background: linear-gradient(180deg, #f1f6ff 0%, #f8fafc 100%); }
+.hs-page { background: var(--brand-bg); }
+.hs-title::before { background: linear-gradient(90deg, transparent, var(--blue)); }
+.hs-title::after { background: linear-gradient(90deg, var(--orange), transparent); }
+.hs-h2--bar::after { background: linear-gradient(90deg, var(--blue), var(--orange)); width: 44px; }
+.hs-urgent { background: var(--grad-navy); box-shadow: 0 18px 40px rgba(10, 26, 64, 0.25); }
+.hs-faces__count, .hs-step__n, .hs-filterbtn__n { background: var(--grad-primary); }
+.hs-header { background: rgba(255, 255, 255, 0.92); backdrop-filter: saturate(1.4) blur(10px); box-shadow: 0 1px 0 var(--line), 0 6px 20px rgba(17, 24, 39, 0.04); }
+.hs-svc__icon { background: linear-gradient(135deg, var(--c), color-mix(in srgb, var(--c) 70%, #000)); box-shadow: 0 6px 14px color-mix(in srgb, var(--c) 35%, transparent); }
+.hs-step__circle { background: linear-gradient(180deg, #fff, #f3f7ff); }
+.hs-features { background: linear-gradient(180deg, #fff, #f9fbff); }
+
+// ---------- Buttons ----------
+.hs-btn {
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+  &:hover { transform: translateY(-2px); filter: none; }
+  &:active { transform: translateY(0); }
+  &--primary:hover { box-shadow: 0 10px 22px rgba(37, 99, 235, 0.38); }
+  &--orange:hover { box-shadow: 0 10px 22px rgba(249, 115, 22, 0.38); }
+  &--outline { border: 1.5px solid var(--blue); color: var(--blue); background: #fff; &:hover { background: var(--bg-soft); color: var(--blue-dark); } }
+}
+
+// ---------- Card hover lift ----------
+.hs-svc, .hs-scard, .hs-offer, .hs-iconcard, .hs-values > *, .hs-testi, .hs-ptesti, .hs-infocards > * {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  &:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: rgba(37, 99, 235, 0.25); }
+}
+.hs-svc__btn { transition: background 0.18s, color 0.18s, transform 0.18s; &:hover { transform: translateX(2px); } }
+
+// ---------- Scroll reveal (see components/ui/RevealOnScroll) ----------
+@keyframes hs-rise { from { opacity: 0; translate: 0 24px; } to { opacity: 1; translate: 0 0; } }
+@keyframes hs-pop { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
+.rv-hide { opacity: 0; }
+.rv-in { animation: hs-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+@for $i from 2 through 6 { .rv-in:nth-child(#{$i}) { animation-delay: #{($i - 1) * 0.08}s; } }
+
+// ---------- Modal / drawer / dropdown transitions ----------
+.hs-modal { backdrop-filter: blur(3px); &__panel { animation: hs-pop 0.26s cubic-bezier(0.2, 0.8, 0.2, 1); } }
+.hs-dd__menu:not(.hs-usermenu) { animation: hs-pop 0.18s ease-out; }
+.hs-nav.is-open { animation: hs-pop 0.22s ease-out; }
+
+// ---------- Header: avatar menu ----------
+.hs-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--grad-primary); color: #fff; display: inline-grid; place-items: center; font-weight: 700; font-size: 0.85rem; box-shadow: 0 3px 8px rgba(37, 99, 235, 0.3); }
+.hs-nav .hs-avatarbtn { gap: 8px; padding: 3px 8px 3px 3px; border-radius: 999px; border: 1px solid var(--line); background: #fff; &:hover { background: var(--bg-soft); } }
+.hs-usermenu {
+  min-width: 210px; visibility: hidden; opacity: 0; transform: translateY(6px); pointer-events: none; transition: opacity 0.18s, transform 0.18s, visibility 0s 0.18s;
+  &.is-open { visibility: visible; opacity: 1; transform: none; pointer-events: auto; transition-delay: 0s; }
+  &__who { padding: 8px 12px 10px; border-bottom: 1px solid var(--line); margin-bottom: 6px; strong, small { display: block; } small { color: var(--muted); font-size: 0.72rem; } }
+  li a, li button { display: flex !important; align-items: center; gap: 10px; }
+}
+
+// ---------- Services mega menu ----------
+.hs-dd--mega { position: relative; }
+.hs-mega {
+  position: absolute; top: 100%; left: -1.6rem; width: min(640px, 92vw); padding-top: 4px; z-index: 60;
+  visibility: hidden; opacity: 0; transform: translateY(10px); pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.22s ease, visibility 0s 0.22s;
+  &.is-open { visibility: visible; opacity: 1; transform: none; pointer-events: auto; transition-delay: 0s; }
+  &__panel {
+    position: relative; background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 1rem; box-shadow: 0 28px 60px rgba(17, 24, 39, 0.18);
+    &::before { content: ''; position: absolute; top: -7px; left: 3.2rem; width: 14px; height: 14px; background: #fff; border-left: 1px solid var(--line); border-top: 1px solid var(--line); transform: rotate(45deg); border-radius: 3px 0 0 0; }
+  }
+  &__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  &__item {
+    --c: var(--blue); --tint: #e8f0ff;
+    display: flex !important; align-items: center; gap: 12px; padding: 10px 12px !important; border-radius: 12px; border: 1px solid transparent; transition: background 0.18s, border-color 0.18s, transform 0.18s;
+    &--orange { --c: var(--orange); --tint: #fff0e4; } &--green { --c: var(--green); --tint: #dcf7ec; } &--purple { --c: var(--purple); --tint: #eee8fb; }
+    &:hover { background: var(--tint); border-color: color-mix(in srgb, var(--c) 25%, transparent); transform: translateX(2px); color: var(--ink) !important; }
+    &:hover .hs-mega__go { opacity: 1; transform: translateX(0); }
+    &:hover .hs-mega__icon { background: var(--c); color: #fff; }
+  }
+  &__icon { flex: 0 0 auto; width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: var(--tint); color: var(--c); transition: background 0.18s, color 0.18s; }
+  &__txt { display: flex; flex-direction: column; min-width: 0; flex: 1; strong { font-size: 0.88rem; font-weight: 600; color: var(--ink); } small { font-size: 0.72rem; color: var(--muted); line-height: 1.4; white-space: normal; } }
+  &__go { color: var(--c); opacity: 0; transform: translateX(-6px); transition: opacity 0.18s, transform 0.18s; flex: 0 0 auto; }
+  &__foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 10px; padding: 10px 12px 2px; border-top: 1px solid var(--line); }
+  .hs-mega__all { color: var(--blue) !important; font-weight: 600 !important; gap: 8px !important; &:hover { color: var(--blue-dark) !important; } svg:last-child { transition: transform 0.18s; } &:hover svg:last-child { transform: translateX(4px); } }
+  .hs-mega__call { color: var(--muted) !important; font-size: 0.76rem !important; gap: 6px !important; }
+}
+@media (hover: hover) and (min-width: 992px) {
+  .hs-dd--mega:hover .hs-mega, .hs-dd--mega:has(:focus-visible) .hs-mega { visibility: visible; opacity: 1; transform: none; pointer-events: auto; transition-delay: 0s; }
+  .hs-dd--mega:hover .hs-nav__split button svg { transform: rotate(180deg); }
+}
+.hs-nav__split button svg { transition: transform 0.2s; }
+.hs-nav__split:has(+ .hs-mega.is-open) button svg { transform: rotate(180deg); }
+@media (max-width: 991.98px) {
+  // Accordion in the mobile menu.
+  .hs-mega {
+    position: static; width: auto; padding: 0; visibility: visible; opacity: 1; transform: none; pointer-events: auto; display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s ease;
+    &.is-open { grid-template-rows: 1fr; }
+    &__panel { overflow: hidden; min-height: 0; border: 0; box-shadow: none; padding: 0 0 0 4px; border-radius: 0; visibility: hidden; transition: visibility 0s 0.3s; &::before { display: none; } }
+    &.is-open &__panel { visibility: visible; transition-delay: 0s; padding: 6px 0 8px 4px; }
+    &__grid { grid-template-columns: minmax(0, 1fr); }
+    &__go { opacity: 0.6; transform: none; }
+    &__foot { padding-bottom: 4px; }
+  }
+  .hs-nav__list li > .hs-mega a, .hs-nav__list li > .hs-mega .hs-mega__item { border-bottom: 0 !important; width: auto; }
+  .hs-nav .hs-mega__item { padding: 10px !important; }
+  .hs-usermenu { position: absolute; }
+  .hs-dd--user .hs-usermenu { right: auto; left: 0; }
+}
+
+// ---------- Reduced motion ----------
+@media (prefers-reduced-motion: reduce) {
+  .rv-hide { opacity: 1; }
+  .rv-in { animation: none; }
+  .hs-svc:hover, .hs-scard:hover, .hs-offer:hover, .hs-btn:hover { transform: none; }
+}
+
+// ---------- DEV-ONLY demo role switcher (login page). TODO(backend): remove with DemoRoleSwitcher ----------
+.hs-demo {
+  margin-top: 1.2rem; padding: 0.9rem; border: 1.5px dashed #f5b27a; background: #fff8f1; border-radius: 14px;
+  p { margin: 0 0 8px; font-size: 0.72rem; color: #9a4a0c; text-align: center; b { letter-spacing: 0.6px; } }
+  &__row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  button { display: grid; justify-items: center; gap: 4px; padding: 0.6rem 0.3rem; border-radius: 10px; border: 1px solid #f3d3b5; background: #fff; color: var(--ink); font-size: 0.7rem; font-weight: 600; line-height: 1.2; transition: transform 0.16s, box-shadow 0.16s, border-color 0.16s; svg { font-size: 1.15rem; color: var(--orange); } &:hover { transform: translateY(-2px); border-color: var(--orange); box-shadow: 0 8px 18px rgba(249, 115, 22, 0.18); } }
+}
+
+// Logged-in header: keep the avatar compact on desktop so the nav never collides with the city picker.
+@media (min-width: 992px) and (max-width: 1399.98px) { .hs-avatarbtn__name { display: none; } }
+.hs-usermenu li a, .hs-usermenu li button { justify-content: flex-start; text-align: left; }
+.hs-usermenu li a svg, .hs-usermenu li button svg { flex: 0 0 auto; }
+.hs-nav .hs-usermenu li a, .hs-nav .hs-usermenu li button { padding: 8px 12px !important; }
